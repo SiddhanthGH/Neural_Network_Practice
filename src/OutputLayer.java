@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class OutputLayer {
     private Neuron[] neurons;
     private int batchSize;
