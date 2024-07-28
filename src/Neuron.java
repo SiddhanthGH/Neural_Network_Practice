@@ -3,13 +3,14 @@ import java.util.Random;
 public class Neuron {
     private int size;
     private double[][] weights;
+    private double[][] oldWeights;
     private double[][] inputs;
     private double[] bias;
+    private double[] oldBiases;
     private int batchSize;
+    private final Random rand = new Random();
 
     public Neuron(double[][] inputs) {
-        Random rand = new Random();
-
         this.inputs = inputs;
         this.size = inputs[0].length;
         this.batchSize = inputs.length;
@@ -50,6 +51,27 @@ public class Neuron {
             }
         }
         return temp;
+    }
+
+    public void changeWeights(double delta) {
+        oldWeights = weights;
+        for(int i = 0; i < batchSize; i++) {
+            for(int j = 0; j < size; j++) {
+                weights[i][j] += delta * rand.nextDouble(1 - -1) + -1;
+            }
+        }
+    }
+
+    public void changeBiases(double delta) {
+        oldBiases = bias;
+        for (int i = 0; i < batchSize; i++) {
+            this.bias[i] = delta * rand.nextDouble(2 - -2) + -2;
+        }
+    }
+
+    public void revert() {
+        weights = oldWeights;
+        bias = oldBiases;
     }
 
 }

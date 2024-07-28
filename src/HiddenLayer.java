@@ -24,4 +24,31 @@ public class HiddenLayer {
         }
         return outArr;
     }
+
+    public void changeWeights(double delta) {
+        for (int i = 0; i < neurons.length; i++) {
+            neurons[i].changeWeights(delta);
+        }
+    }
+
+    public void changeBiases(double delta) {
+        for (int i = 0; i < neurons.length; i++) {
+            neurons[i].changeBiases(delta);
+        }
+    }
+
+    public void revertChanges(double delta) {
+        for (int i = 0; i < neurons.length; i++) {
+            neurons[i].revert();
+        }
+    }
+
+    public Neuron[] getNeurons() {
+        return neurons;
+    }
+
+    public int getBatchSize() {
+        return batchSize;
+    }
+
 }
