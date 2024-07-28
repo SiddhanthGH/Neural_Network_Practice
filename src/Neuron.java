@@ -2,32 +2,54 @@ import java.util.Random;
 
 public class Neuron {
     private int size;
-    private double[] weights;
-    private double[] inputs;
-    private double bias;
+    private double[][] weights;
+    private double[][] inputs;
+    private double[] bias;
+    private int batchSize;
 
-    public Neuron(double[] inputs) {
+    public Neuron(double[][] inputs) {
         Random rand = new Random();
 
         this.inputs = inputs;
-        this.size = inputs.length;
-        this.weights = new double[size];
-        this.bias = rand.nextDouble(2 - -2) + -2;
+        this.size = inputs[0].length;
+        this.batchSize = inputs.length;
+        //System.out.println(batchSize);
+        this.weights = new double[batchSize][size];
+        this.bias = new double[batchSize];
 
-        for(int i = 0; i < weights.length; i++) {
-            weights[i] = rand.nextDouble(1 - -1) + -1;
+        for (int i = 0; i < batchSize; i++) {
+            this.bias[i] = rand.nextDouble(2 - -2) + -2;
         }
+
+        for(int i = 0; i < batchSize; i++) {
+            for(int j = 0; j < size; j++) {
+                weights[i][j] = rand.nextDouble(1 - -1) + -1;
+            }
+        }
+
+        weights = transpose(weights, batchSize, size);
+
     }
 
-    public double out() {
-        double out = 0;
-        for (int i = 0; i < weights.length; i++) {
-            out += inputs[i] * weights[i];
-        }
-        out += bias;
-        if (out <= 0) {
-            out = 0;
+    public double[] out() {
+        double[] out = new double[batchSize];
+        for (int i = 0; i < batchSize; i++) {
+            for(int j = 0; j < size; j++) {
+                out[i] += inputs[i][j] * weights[j][i];
+            }
+            out[i] += bias[i];
         }
         return out;
     }
+
+    public double[][] transpose(double[][] arr, int batchSize, int size) {
+        double[][] temp = new double[size][batchSize];
+        for (int i = 0; i < batchSize; i++) {
+            for (int j = 0; j < size; j++) {
+                temp[j][i] = arr[i][j];
+            }
+        }
+        return temp;
+    }
+
 }

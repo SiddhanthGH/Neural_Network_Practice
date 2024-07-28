@@ -2,49 +2,52 @@ import java.util.Arrays;
 
 public class OutputLayer {
     private Neuron[] neurons;
+    private int batchSize;
 
-    public OutputLayer(int neuronNum, double[] inputs) {
+    public OutputLayer(int neuronNum, double[][] inputs) {
+        //System.out.println(Arrays.deepToString(inputs));
         neurons = new Neuron[neuronNum];
+        this.batchSize = inputs.length;
         for (int i = 0; i < neuronNum; i++) {
             neurons[i] = new Neuron(inputs);
         }
     }
 
-    public double[] forward() {
-        double[] outArr = new double[neurons.length];
+    public double[][] forward() {
+        double[][] outArr = new double[batchSize][neurons.length];
         double expSum = 0;
         double max;
 
-        //System.out.println();
-
-        for (int i = 0; i < neurons.length; i++) {
-            outArr[i] = neurons[i].out();
-            //System.out.println(outArr[i]);
-        }
-
-        //Get maximum and subtract
-        max = outArr[0];
-
-        for (int i = 1; i < neurons.length; i++) {
-            if (outArr[i] >= max) {
-                max = outArr[i];
+        for (int i = 0; i < batchSize; i++) {
+            for (int j = 0; j < neurons.length; j++) {
+                outArr[i][j] = neurons[j].out()[i];
             }
         }
 
-        //System.out.println(max);
-        //System.out.println();
+        for (int i = 0; i < batchSize; i++) {
+            //Get maximum and subtract
+            max = outArr[i][0];
+            expSum = 0;
 
-        for (int i = 0; i < neurons.length; i++) {
-            outArr[i] = outArr[i] - max;
-        }
+            for (int j = 1; j < neurons.length; j++) {
+                if (outArr[i][j] >= max) {
+                    max = outArr[i][j];
+                }
+            }
 
-        //Softmax activation
-        for (int i = 0; i < neurons.length; i++) {
-            expSum += Math.exp(outArr[i]);
-        }
+            for (int j = 0; j < neurons.length; j++) {
+                outArr[i][j] = outArr[i][j] - max;
+            }
 
-        for (int i = 0; i < neurons.length; i++) {
-            outArr[i] = Math.exp(outArr[i]) / expSum;
+            //Softmax activation
+            for (int j = 0; j < neurons.length; j++) {
+                outArr[i][j] = Math.exp(outArr[i][j]);
+                expSum += outArr[i][j];
+            }
+
+            for (int j = 0; j < neurons.length; j++) {
+                outArr[i][j] = outArr[i][j] / expSum;
+            }
         }
 
         return outArr;
