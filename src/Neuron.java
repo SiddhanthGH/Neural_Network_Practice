@@ -54,24 +54,37 @@ public class Neuron {
     }
 
     public void changeWeights(double delta) {
-        oldWeights = weights;
+        oldWeights = new double[size][batchSize];
         for(int i = 0; i < batchSize; i++) {
             for(int j = 0; j < size; j++) {
-                weights[i][j] += delta * rand.nextDouble(1 - -1) + -1;
+                oldWeights[j][i] = weights[j][i];
+                weights[j][i] += delta * rand.nextDouble(1 - -1) + -1;
             }
         }
     }
 
     public void changeBiases(double delta) {
-        oldBiases = bias;
+        oldBiases = new double[batchSize];
         for (int i = 0; i < batchSize; i++) {
-            this.bias[i] = delta * rand.nextDouble(2 - -2) + -2;
+            oldBiases[i] = bias[i];
+            bias[i] += delta * rand.nextDouble(2 - -2) + -2;
         }
     }
 
     public void revert() {
         weights = oldWeights;
         bias = oldBiases;
+    }
+
+    public void changeInputs(double[][] inputs) {
+        this.size = inputs[0].length;
+        this.batchSize = inputs.length;
+        this.inputs = new double[batchSize][size];
+        for (int i = 0; i < batchSize; i++) {
+            for (int j = 0; j < size; j++) {
+                this.inputs[i][j] = inputs[i][j];
+            }
+        }
     }
 
 }

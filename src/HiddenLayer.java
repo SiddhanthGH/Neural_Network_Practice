@@ -1,3 +1,5 @@
+import java.awt.image.SinglePixelPackedSampleModel;
+
 public class HiddenLayer {
     private Neuron[] neurons;
     private int batchSize;
@@ -16,7 +18,7 @@ public class HiddenLayer {
             for(int j = 0; j < neurons.length; j++) {
                 outArr[i][j] = neurons[j].out()[i];
                 for(int k = 0; k < neurons.length; k++) {
-                    if (outArr[i][k] <= 0) {
+                    if (outArr[i][k] < 0) {
                         outArr[i][k] = 0;
                     }
                 }
@@ -37,7 +39,7 @@ public class HiddenLayer {
         }
     }
 
-    public void revertChanges(double delta) {
+    public void revertChanges() {
         for (int i = 0; i < neurons.length; i++) {
             neurons[i].revert();
         }
@@ -49,6 +51,13 @@ public class HiddenLayer {
 
     public int getBatchSize() {
         return batchSize;
+    }
+
+    public void changeInputs(double[][] inputs) {
+        this.batchSize = inputs.length;
+        for (int i = 0; i < neurons.length; i++) {
+            neurons[i].changeInputs(inputs);
+        }
     }
 
 }
