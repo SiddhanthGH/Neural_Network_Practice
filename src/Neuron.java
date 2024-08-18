@@ -4,9 +4,11 @@ public class Neuron {
     private int size;
     private double[][] weights;
     private double[][] oldWeights;
+    private final double[][] firstWeights;
     private double[][] inputs;
     private double[] bias;
     private double[] oldBiases;
+    private final double[] firstBias;
     private int batchSize;
     private final Random rand = new Random();
 
@@ -30,6 +32,9 @@ public class Neuron {
 
         weights = transpose(weights, batchSize, size);
 
+        firstBias = bias;
+        firstWeights = weights;
+
     }
 
     public double[] out() {
@@ -39,6 +44,17 @@ public class Neuron {
                 out[i] += inputs[i][j] * weights[j][i];
             }
             out[i] += bias[i];
+        }
+        return out;
+    }
+
+    public double[] firstOut() {
+        double[] out = new double[batchSize];
+        for (int i = 0; i < batchSize; i++) {
+            for(int j = 0; j < size; j++) {
+                out[i] += inputs[i][j] * firstWeights[j][i];
+            }
+            out[i] += firstBias[i];
         }
         return out;
     }
@@ -86,5 +102,4 @@ public class Neuron {
             }
         }
     }
-
 }

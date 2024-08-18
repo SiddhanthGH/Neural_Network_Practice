@@ -1,7 +1,7 @@
 import java.awt.image.SinglePixelPackedSampleModel;
 
 public class HiddenLayer {
-    private Neuron[] neurons;
+    private final Neuron[] neurons;
     private int batchSize;
 
     public HiddenLayer(int neuronNum, double[][] inputs) {
@@ -17,6 +17,19 @@ public class HiddenLayer {
         for (int i = 0; i < batchSize; i++) {
             for(int j = 0; j < neurons.length; j++) {
                 outArr[i][j] = neurons[j].out()[i];
+                if (outArr[i][j] < 0) {
+                    outArr[i][j] = 0;
+                }
+            }
+        }
+        return outArr;
+    }
+
+    public double[][] firstForward() {
+        double[][] outArr = new double[batchSize][neurons.length];
+        for (int i = 0; i < batchSize; i++) {
+            for(int j = 0; j < neurons.length; j++) {
+                outArr[i][j] = neurons[j].firstOut()[i];
                 for(int k = 0; k < neurons.length; k++) {
                     if (outArr[i][k] < 0) {
                         outArr[i][k] = 0;
